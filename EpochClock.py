@@ -12,7 +12,10 @@ BEVEL_COLOR = 'gray21'          # dark gray
 CONTROL_COLOR = 'gray75'        # light gray
 DISPLAY_COLOR='#000000'         # black
 FONT = '14-segmented display'   # https://fontstruct.com/fontstructions/show/2341582/14-segmented-display
+SCALE = .5                      # needs to be 1/INTEGER (e.g. not .38)
 DEFAULT_BASE = 10
+WIDTH = 750
+HEIGHT = 275
 
 # globals
 base = DEFAULT_BASE
@@ -20,6 +23,7 @@ canvas = None
 fourteenSegSmallFont = None
 fourteenSegLargeFont = None
 root = None
+invScale = int(1/SCALE)
 
 def main():
     global canvas
@@ -30,7 +34,7 @@ def main():
     # create window
     root = tk.Tk()
     root.resizable(False, False)
-    root.geometry(f'750x275')
+    root.geometry(f'{0+(WIDTH-25)//invScale}x{25+25//invScale+(HEIGHT-50)//invScale}')
     root.configure(bg=CONTROL_COLOR)
     root.title('Epoch Clock')
     root.eval('tk::PlaceWindow . center') # Placing the window in the center of the screen
@@ -80,8 +84,8 @@ def main():
         x.set(base)
 
     # create fonts
-    fourteenSegSmallFont = tk.font.Font(family=FONT, size=-30)  # negative size is pixels rather than points
-    fourteenSegLargeFont = tk.font.Font(family=FONT, size=-50)  # negative size is pixels rather than points
+    fourteenSegSmallFont = tk.font.Font(family=FONT, size=-30//invScale)  # negative size is pixels rather than points
+    fourteenSegLargeFont = tk.font.Font(family=FONT, size=-50//invScale)  # negative size is pixels rather than points
 
     # display
     updateClockDisplay(reschedule=True)
@@ -99,13 +103,13 @@ def updateClockDisplay(reschedule=True):
 
     # add a rectangle to the canvas to be the clock bevel and hold the clock display
     canvas.pack(fill=tk.constants.BOTH, expand=1)
-    round_rectangle(25, 25, 725, 225, radius=40, color=DISPLAY_COLOR)
+    round_rectangle(25//invScale, 25//invScale, 0+((WIDTH-50)//invScale), 0+((HEIGHT-50)//invScale), radius=40, color=DISPLAY_COLOR)
 
     # AM/PM
-    displayText(canvas,  60,  50, 'PM' if datetime.datetime.now().hour >= 12 else 'AM')
+    displayText(canvas,  60//invScale,  50//invScale, 'PM' if datetime.datetime.now().hour >= 12 else 'AM')
 
     # mm-dd-yyyy
-    displayText(canvas, 390,  50, datetime.datetime.now().strftime('%m-%d-%Y'))
+    displayText(canvas, 390/invScale,  50/invScale, datetime.datetime.now().strftime('%m-%d-%Y'))
 
     # H:M
     # get one consistant now to use to avoid race conditions
@@ -127,7 +131,7 @@ def updateClockDisplay(reschedule=True):
         case 10:
             h = f'{modifiedHour:02}'
             m = f'{now.minute:02}'
-            displayText(canvas,  65+4*50, 120, f'{h}:{m}', 'large')
+            displayText(canvas,  (65+4*50)//invScale, 120//invScale, f'{h}:{m}', 'large')
         case 8:
             h = f'{modifiedHour:02o}'
             m = f'{now.minute:02o}'
@@ -137,10 +141,10 @@ def updateClockDisplay(reschedule=True):
     if h == '00':
         h = '12'
     digOffset = 6-len(h)
-    displayText(canvas,  65+digOffset*50, 120, f'{h}:{m}', 'large')
+    displayText(canvas,  (65+digOffset*50)//invScale, 120//invScale, f'{h}:{m}', 'large')
 
     # epoch
-    displayText(canvas,  60, 185, str(int(now.timestamp())))
+    displayText(canvas,  60//invScale, 185//invScale, str(int(now.timestamp())))
 
     # schedule another run on the next 1 second rollover
     if reschedule:
@@ -148,13 +152,13 @@ def updateClockDisplay(reschedule=True):
         root.after(delay, updateClockDisplay)
 
 
-def displayText(canvas, x, y, text, size='small'):
-    if size == 'small':
+def displayText(canvas, x, y, text, fontSize='small'):
+    if fontSize == 'small':
         font = fourteenSegSmallFont
-        spacing = 30
+        spacing = 30//invScale
     else:
         font = fourteenSegLargeFont
-        spacing = 50
+        spacing = 50//invScale
     for i, l in enumerate(text):
         if l == '0':
             l = 'O'
