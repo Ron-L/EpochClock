@@ -1,0 +1,5 @@
+opencv-python==4.11.0.*
+pyperclip==1.9.0
+roman==5.0
+
+BUTTON_BACKGROUND_COLOR = 'gray21'              # light gray https://cs111.wellesley.edu/archive/cs111_fall14/public_html/labs/lab12/tkintercolor.html

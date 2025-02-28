@@ -1,0 +1,1 @@
+pyinstaller EpochClock.py --onefile --windowed
