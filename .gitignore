@@ -4,3 +4,6 @@ dist
 __pycache__
 EpochClock.spec
 Font/14-segmented-display.zip
+
+# Claude Code's "Yes, and don't ask again" approvals (may hold a command's password) — never commit (2026-11-12)
+.claude/settings.local.json
